@@ -22,31 +22,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: rlespinasse/github-slug-action@v3.x
-      - name: Output
-        run: |
-          echo "Partial variables"
-          echo "   repository owner    : ${{ env.GITHUB_REPOSITORY_OWNER_PART }}"
-          echo "   test                : ${{ github }}"
-          echo "   repository name     : ${{ env.GITHUB_REPOSITORY_NAME_PART }}"
-          echo "Slug variables"
-          echo "   repository          : ${{ env.GITHUB_REPOSITORY_SLUG }}"
-          echo "   repository owner    : ${{ env.GITHUB_REPOSITORY_OWNER_PART_SLUG }}"
-          echo "   repository name     : ${{ env.GITHUB_REPOSITORY_NAME_PART_SLUG }}"
-          echo "   ref                 : ${{ env.GITHUB_REF_SLUG }}"
-          echo "   head ref            : ${{ env.GITHUB_HEAD_REF_SLUG }}"
-          echo "   base ref            : ${{ env.GITHUB_BASE_REF_SLUG }}"
-          echo "   event ref           : ${{ env.GITHUB_EVENT_REF_SLUG }}"
-          echo "Slug URL variables"
-          echo "   repository          : ${{ env.GITHUB_REPOSITORY_SLUG_URL }}"
-          echo "   repository owner    : ${{ env.GITHUB_REPOSITORY_OWNER_PART_SLUG_URL }}"
-          echo "   repository name     : ${{ env.GITHUB_REPOSITORY_NAME_PART_SLUG_URL }}"
-          echo "   ref                 : ${{ env.GITHUB_REF_SLUG_URL }}"
-          echo "   head ref            : ${{ env.GITHUB_HEAD_REF_SLUG_URL }}"
-          echo "   base ref            : ${{ env.GITHUB_BASE_REF_SLUG_URL }}"
-          echo "   event ref           : ${{ env.GITHUB_EVENT_REF_SLUG_URL }}"
-          echo "Short SHA variables"
-          echo "   sha                 : ${{ env.GITHUB_SHA_SHORT }}"
-          echo "   pull request sha    : ${{ env.GITHUB_EVENT_PULL_REQUEST_HEAD_SHA_SHORT }}"
 
       # Login to Docker Hub
       - name: Login to DockerHub
@@ -60,7 +35,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           push: true
-          tags: timoscheuermann/${{ github.repository }}:${{ github.sha }}, timoscheuermann/${{ github.repository }}:latest
+          tags: timoscheuermann/${{ env.GITHUB_REPOSITORY_SLUG }}:${{ github.sha }}, timoscheuermann/${{ env.GITHUB_REPOSITORY_SLUG }}:latest
 
   update:
     runs-on: ubuntu-latest
