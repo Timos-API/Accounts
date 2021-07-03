@@ -1,6 +1,7 @@
 package auth
 
 import (
+	"Timos-API/Accounts/user"
 	"errors"
 	"fmt"
 	"html/template"
@@ -45,7 +46,7 @@ func handleOAuthCallback(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	user := UserSignedIn(gothUser)
+	user := user.UserSignedIn(gothUser)
 
 	if user == nil {
 		fmt.Fprintln(w, errors.New("USER NOT FOUND"))

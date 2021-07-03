@@ -1,4 +1,4 @@
-package account
+package user
 
 import (
 	"fmt"
@@ -8,9 +8,9 @@ import (
 )
 
 func RegisterRoutes(router *mux.Router) {
-	fmt.Println("Account routes registered")
-	s := router.PathPrefix("/account").Subrouter()
+	fmt.Println("User routes registered")
+	s := router.PathPrefix("/user").Subrouter()
 
 	s.HandleFunc("/valid", authenticator.AuthMiddleware(nil, nil)).Methods("POST")
-
+	s.HandleFunc("/info/{id}", GetUserInfo).Methods("GET")
 }
