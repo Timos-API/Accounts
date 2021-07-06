@@ -1,9 +1,12 @@
 package main
 
 import (
-	"Timos-API/Accounts/auth"
-	"Timos-API/Accounts/database"
-	"Timos-API/Accounts/user"
+	"Timos-API/Accounts/persistence"
+	"Timos-API/Accounts/service"
+	"Timos-API/Accounts/transport"
+	"context"
+	"fmt"
+	"os"
 
 	"log"
 	"strings"
@@ -13,12 +16,12 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/rs/cors"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 func main() {
-
-	auth.RegisterOAuth()
-	database.Connect()
+	db := connectToDB()
 
 	router := mux.NewRouter()
 	router.Use(routerMw)
@@ -30,8 +33,17 @@ func main() {
 		AllowedMethods: []string{"POST", "GET", "DELETE", "PATCH", "OPTIONS"},
 	}).Handler(router)
 
-	auth.RegisterRoutes(router)
-	user.RegisterRoutes(router)
+	// User module
+	up := persistence.NewUserPersistor(db.Collection("user"))
+	us := service.NewUserService(up)
+	ut := transport.NewUserTransporter(us)
+	ut.RegisterUserRoutes(router)
+
+	// Auth module
+	as := service.NewAuthService(us)
+	at := transport.NewAuthTransporter(as)
+	as.RegisterOAuth()
+	at.RegisterAuthRoutes(router)
 
 	server := &http.Server{
 		Addr:         ":3000",
@@ -51,4 +63,22 @@ func routerMw(next http.Handler) http.Handler {
 		}
 		next.ServeHTTP(w, r)
 	})
+}
+
+func connectToDB() *mongo.Database {
+
+	clientOptions := options.Client().ApplyURI(os.Getenv("MONGO_URI"))
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+
+	defer cancel()
+
+	c, err := mongo.Connect(ctx, clientOptions)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println("Successfully connected to MongoDB")
+
+	return c.Database("TimosAPI")
 }

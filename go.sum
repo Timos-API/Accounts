@@ -35,8 +35,8 @@ cloud.google.com/go/storage v1.10.0/go.mod h1:FLPqc6j+Ki4BU591ie1oL6qBQGu2Bl/tZ9
 dmitri.shuralyov.com/gpu/mtl v0.0.0-20190408044501-666a987793e9/go.mod h1:H6x//7gZCb22OMCxBHrMx7a5I7Hp++hsVxbQ4BYO7hU=
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
 github.com/BurntSushi/xgb v0.0.0-20160522181843-27f122750802/go.mod h1:IVnqGOEym/WlBOVXweHU+Q+/VP0lqqI8lqeDx9IjBqo=
-github.com/Timos-API/Authenticator v0.0.0-20210703094516-6a33d767636e h1:qNU9iMp2WLMhN/amJ+G6krlRwVIbEpsrBd2tIo0xy68=
-github.com/Timos-API/Authenticator v0.0.0-20210703094516-6a33d767636e/go.mod h1:MbghF2NFVUbiv4fdaTJ2XgbFGwDl4rKSL1PB/JNZLy4=
+github.com/Timos-API/Authenticator v1.0.1 h1:Q9bEqOc2eNLs6STAVR83UhOy4dvPYXCGR3OaHVp5YGY=
+github.com/Timos-API/Authenticator v1.0.1/go.mod h1:/i3D0BEuT+WwTYUUgYpiEkc58A8IE00rhORB3VFpoeQ=
 github.com/aws/aws-sdk-go v1.34.28 h1:sscPpn/Ns3i0F4HPEWAVcwdIRaZZCuL7llJ2/60yPIk=
 github.com/aws/aws-sdk-go v1.34.28/go.mod h1:H7NKnBqNVzoTJpGfLrQkkD+ytBA93eiDYi/+8rV9s48=
 github.com/brianvoe/sjwt v0.5.1 h1:OKwnUrrVMnP81N9S5+ylgZECUEwW4Uw6W6J0FgcIZfw=
@@ -146,6 +146,7 @@ github.com/gorilla/context v1.1.1/go.mod h1:kBGZzfjB9CEq2AlWe17Uuf7NDRt0dE0s8S51
 github.com/gorilla/mux v1.6.2/go.mod h1:1lud6UwP+6orDFRuTfBEV8e9/aOM/c4fVVCaMa2zaAs=
 github.com/gorilla/mux v1.8.0 h1:i40aqfkR1h2SlN9hojwV5ZA91wcXFOvkdNIeFDP5koI=
 github.com/gorilla/mux v1.8.0/go.mod h1:DVbg23sWSpFRCP0SfiEN6jmj59UnW/n46BH5rLB71So=
+github.com/gorilla/pat v0.0.0-20180118222023-199c85a7f6d1 h1:LqbZZ9sNMWVjeXS4NN5oVvhMjDyLhmA1LG86oSo+IqY=
 github.com/gorilla/pat v0.0.0-20180118222023-199c85a7f6d1/go.mod h1:YeAe0gNeiNT5hoiZRI4yiOky6jVdNvfO2N6Kav/HmxY=
 github.com/gorilla/securecookie v1.1.1 h1:miw7JPhV+b/lAHSXz4qd/nN9jRiAFV5FwjeKyCS8BvQ=
 github.com/gorilla/securecookie v1.1.1/go.mod h1:ra0sb63/xPlUeL+yeDciTfxMRAA+MP+HVt/4epWDjd4=

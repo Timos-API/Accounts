@@ -1,16 +1,23 @@
-# Build stage
-FROM golang:alpine AS builder
+FROM golang:latest as builder
 
-WORKDIR /app
+RUN apt-get update && apt-get install ca-certificates tzdata -y && update-ca-certificates
+
+ENV GO111MODULE="on"
+
+COPY go.mod go.mod
+COPY go.sum go.sum
+
+RUN go mod download
+
 COPY . .
-RUN go build -o main .
 
-# Run stage
-FROM alpine:3.13
-WORKDIR /app
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-w -s" -o app .
 
-COPY --from=builder /app/main .
-COPY auth.html .
+FROM scratch as prod
 
-EXPOSE 3000
-CMD ["/app/main"]
+COPY --from=builder /usr/share/zoneinfo /usr/share/zoneinfo
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+COPY --from=builder /app /app
+COPY --from=builder /auth.html /auth.html
+
+ENTRYPOINT ["/app"]
