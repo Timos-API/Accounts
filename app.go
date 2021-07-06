@@ -46,7 +46,7 @@ func main() {
 	at.RegisterAuthRoutes(router)
 
 	server := &http.Server{
-		Addr:         ":3000",
+		Addr:         os.ExpandEnv("${host}:3000"),
 		Handler:      handler,
 		WriteTimeout: 15 * time.Second,
 		ReadTimeout:  15 * time.Second,

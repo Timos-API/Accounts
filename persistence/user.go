@@ -16,7 +16,7 @@ type UserPersistor struct {
 }
 
 var (
-	ErrInsert = errors.New("Error after inserting document")
+	ErrInsert = errors.New("error after inserting document")
 )
 
 func NewUserPersistor(c *mongo.Collection) *UserPersistor {
