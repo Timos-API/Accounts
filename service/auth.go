@@ -3,11 +3,12 @@ package service
 import (
 	"Timos-API/Accounts/helper"
 	"context"
+	"fmt"
 	"os"
 	"strings"
 	"time"
 
-	authenticator "github.com/Timos-API/Authenticator"
+	"github.com/Timos-API/authenticator"
 	"github.com/brianvoe/sjwt"
 	"github.com/gorilla/sessions"
 	"github.com/markbates/goth"
@@ -30,7 +31,7 @@ func NewAuthService(u *UserService) *AuthService {
 	return &AuthService{u}
 }
 
-func (s *AuthService) RegisterOAuth() {
+func init() {
 	store := sessions.NewCookieStore([]byte(os.Getenv("SESSION_KEY")))
 	store.MaxAge(86400 * 30)
 	store.Options.Path = "/"
@@ -44,15 +45,14 @@ func (s *AuthService) RegisterOAuth() {
 		github.New(os.Getenv("GITHUB_KEY"), os.Getenv("GITHUB_SECRET"), os.ExpandEnv("${CALLBACK}/auth/github/callback"), "user:name"),
 		twitter.New(os.Getenv("TWITTER_KEY"), os.Getenv("TWITTER_SECRET"), os.ExpandEnv("${CALLBACK}/auth/twitter/callback")),
 	)
+
+	fmt.Println("OAuth Providers registered")
 }
 
 func (s *AuthService) UserSignedIn(ctx context.Context, gothUser goth.User) (*JwtToken, error) {
-
 	millis := helper.CurrentTimeMillis()
-	var jwtUser *authenticator.User
 
-	if exist, user := s.u.doesUserExistP(ctx, gothUser.Provider, gothUser.UserID); exist {
-
+	if exist, user := s.u.doesUserExist(ctx, gothUser.Provider, gothUser.UserID); exist {
 		user, err := s.u.updateUser(ctx, user.UserID.Hex(), bson.M{
 			"avatar":     gothUser.AvatarURL,
 			"last_login": millis,
@@ -62,28 +62,29 @@ func (s *AuthService) UserSignedIn(ctx context.Context, gothUser goth.User) (*Jw
 		if err != nil {
 			return nil, err
 		}
-		jwtUser = user
 
+		return s.createToken(user)
 	} else {
-
 		user, err := s.u.createUser(ctx, authenticator.User{
 			ProviderID:  gothUser.UserID,
 			Provider:    gothUser.Provider,
 			Name:        gothUser.Name,
 			Avatar:      gothUser.AvatarURL,
 			Group:       "user",
+			Permissions: []string{},
 			MemberSince: millis,
 			LastLogin:   millis,
 		})
-
 		if err != nil {
 			return nil, err
 		}
-		jwtUser = user
 
+		return s.createToken(user)
 	}
+}
 
-	claims, err := sjwt.ToClaims(jwtUser)
+func (s *AuthService) createToken(user *authenticator.User) (*JwtToken, error) {
+	claims, err := sjwt.ToClaims(user)
 	if err != nil {
 		return nil, err
 	}
@@ -92,5 +93,4 @@ func (s *AuthService) UserSignedIn(ctx context.Context, gothUser goth.User) (*Jw
 	jwt := claims.Generate([]byte(os.Getenv("JWT_SECRET")))
 
 	return &JwtToken{jwt}, nil
-
 }

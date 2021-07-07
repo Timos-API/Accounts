@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"net/http"
 
-	authenticator "github.com/Timos-API/Authenticator"
 	"github.com/gorilla/mux"
 )
 
@@ -19,10 +18,8 @@ func NewUserTransporter(s *service.UserService) *UserTransporter {
 }
 
 func (c *UserTransporter) RegisterUserRoutes(router *mux.Router) {
-	s := router.PathPrefix("/user").Subrouter()
 
-	s.HandleFunc("/valid", authenticator.Middleware(nil, nil)).Methods("POST")
-	s.HandleFunc("/info/{id}", c.getUserInfo).Methods("GET")
+	router.HandleFunc("/user/info/{id}", c.getUserInfo).Methods("GET")
 
 	fmt.Println("User routes registered")
 }
@@ -38,7 +35,7 @@ func (c *UserTransporter) getUserInfo(w http.ResponseWriter, req *http.Request) 
 	userInfo, err := c.s.GetUserInfo(req.Context(), id)
 
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, "User not found", http.StatusInternalServerError)
 		return
 	}
 

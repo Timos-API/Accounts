@@ -6,6 +6,7 @@ import (
 	"html/template"
 	"net/http"
 
+	"github.com/Timos-API/authenticator"
 	"github.com/gorilla/mux"
 	"github.com/markbates/goth/gothic"
 )
@@ -20,10 +21,9 @@ func NewAuthTransporter(s *service.AuthService) *AuthTransporter {
 
 func (c *AuthTransporter) RegisterAuthRoutes(router *mux.Router) {
 
-	s := router.PathPrefix("/auth").Subrouter()
-
-	s.HandleFunc("/{provider}", gothic.BeginAuthHandler).Methods("GET")
-	s.HandleFunc("/{provider}/callback", c.handleOAuthCallback).Methods("GET")
+	router.HandleFunc("/auth/{provider}", gothic.BeginAuthHandler).Methods("GET")
+	router.HandleFunc("/auth/{provider}/callback", c.handleOAuthCallback).Methods("GET")
+	router.HandleFunc("/auth/valid", authenticator.Middleware(nil, nil)).Methods("POST")
 
 	fmt.Println("Auth routes registered")
 }
